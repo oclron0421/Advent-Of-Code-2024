@@ -38,7 +38,6 @@ int main() {
     }
 
     std::string line;
-    int col = 0;
     while (std::getline(inputFile, line)) {
         std::istringstream iss(line);
         std::vector<int> rowVector;
@@ -49,13 +48,19 @@ int main() {
         gridVector.push_back(rowVector);
     }
 
-
-    //print array 
+    // Print the array
     printVector(gridVector);
     int safeReports = 0;
 
     for (int i = 0; i < gridVector.size(); i++) {
-        //check if the array is ascending or descending 
+        // Check if the row is too short
+        if (gridVector[i].size() < 2) {
+            std::cout << "Row " << i << " is too short to evaluate." << std::endl;
+            resetArrayState(arrayState);
+            continue;
+        }
+
+        // Determine the row pattern
         if (gridVector[i][0] < gridVector[i][gridVector[i].size() - 1]) {
             arrayState["isAscending"] = true;
         }
@@ -66,56 +71,91 @@ int main() {
             arrayState["isEqual"] = true;
         }
 
-        //if array is ascending
+        // If the row is ascending
         if (arrayState["isAscending"] && !arrayState["isDescending"] && !arrayState["isEqual"]) {
+            //std::cout << "Array is ascending at row: " << i << std::endl;
             bool isSafe = true;
+            bool alreadyRemoved = false;
             for (int j = 0; j < gridVector[i].size() - 1; j++) {
-                if (gridVector[i][j + 1] - gridVector[i][j] <= 3 && gridVector[i][j + 1] - gridVector[i][j] >= 0 && gridVector[i][j + 1] != gridVector[i][j]) {
+                if (gridVector[i][j + 1] - gridVector[i][j] <= 3 &&
+                    gridVector[i][j + 1] - gridVector[i][j] >= 0 &&
+                    gridVector[i][j + 1] != gridVector[i][j]) {
                     continue;
                 }
                 else {
-                    isSafe = false;
-                    break;
+                    if (gridVector[i][j + 2] - gridVector[i][j] <= 3 &&
+                        gridVector[i][j + 2] - gridVector[i][j] >= 0 &&
+                        gridVector[i][j + 2] != gridVector[i][j] &&
+                        (j + 2) < gridVector[i].size() &&
+                        !alreadyRemoved) {
+                        alreadyRemoved = true;
+                        j += 2;
+                        continue;
+                    }
+                    else {
+                        isSafe = false;
+                        break;
+                    }
                 }
             }
             if (isSafe) {
                 safeReports++;
+                std::cout << "Safe report at row: " << i + 1 << std::endl;
+            }
+            else {
+                std::cout << "Unsafe report at row: " << i + 1 << std::endl;
             }
         }
-        //if array is descending
+        // If the row is descending
         else if (!arrayState["isAscending"] && arrayState["isDescending"] && !arrayState["isEqual"]) {
+            //std::cout << "Array is descending at row: " << i << std::endl;
             bool isSafe = true;
+            bool alreadyRemoved = false;
             for (int j = 0; j < gridVector[i].size() - 1; j++) {
-                if (gridVector[i][j] - gridVector[i][j + 1] <= 3 && gridVector[i][j] - gridVector[i][j + 1] >= 0 && gridVector[i][j] != gridVector[i][j + 1]) {
+                if (gridVector[i][j] - gridVector[i][j + 1] <= 3 &&
+                    gridVector[i][j] - gridVector[i][j + 1] >= 0 &&
+                    gridVector[i][j] != gridVector[i][j + 1]) {
                     continue;
                 }
                 else {
-                    isSafe = false;
-                    break;
+                    if (gridVector[i][j] - gridVector[i][j + 2] <= 3 &&
+                        gridVector[i][j] - gridVector[i][j + 2] >= 0 &&
+                        gridVector[i][j] != gridVector[i][j + 2] &&
+                        (j + 2) < gridVector[i].size() &&
+                        !alreadyRemoved) {
+                        alreadyRemoved = true;
+                        j += 2;
+                        continue;
+                    }
+                    else {
+                        isSafe = false;
+                        break;
+                    }
                 }
             }
             if (isSafe) {
                 safeReports++;
+                std::cout << "Safe report at row: " << i << std::endl;
+            }
+            else {
+                std::cout << "Unsafe report at row: " << i << std::endl;
             }
         }
-        //if array is equal
-        else if (!arrayState["isAscending"] && !arrayState["isDescending"] && arrayState["isEqual"]) {
-            bool isSafe = true;
-            for (int j = 0; j < gridVector[i].size() - 1; j++) {
-                if (gridVector[i][j] == gridVector[i][j + 1]) {
-                    continue;
-                }
-                else {
-                    isSafe = false;
-                    break;
-                }
-            }
-            if (isSafe) {
-                safeReports++;
-            }
+        // If the row is equal
+        else if (arrayState["isEqual"]) {
+            std::cout << "Array is equal at row: " << i << std::endl;
+            std::cout << "Unsafe report at row: " << i << " (default for equal rows)." << std::endl;
+
         }
+        // Handle unhandled cases
+        else {
+            std::cout << "Row " << i << " does not match any pattern and is unsafe." << std::endl;
+        }
+
         resetArrayState(arrayState);
     }
+
     std::cout << "The number of safe reports is: " << safeReports << std::endl;
     inputFile.close();
 }
+
