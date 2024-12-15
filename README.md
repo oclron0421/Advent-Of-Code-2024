@@ -10,5 +10,7 @@ Still not too bad, involved more validation and checking as well as multiplicati
 ## Day 2
 ### Part 1 
 Didnt read my input, coded based off the example input they gave which led me to using arrays as I initially thought that the numbers for each row would be fixed, READ YOUR INPUT BEFORE CODING ARGHHHHHH
+### Part 2 
+Took me forever to complete, brute force all the way, there has to be a wayyyyy more efficient solution to it...
 
 
