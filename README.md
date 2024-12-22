@@ -19,5 +19,10 @@ Might seem daunting but its very very doable
 ### Part 2
 I hate regex, implemented the edge cases with the help of others, still no idea what went wrong ._.
 
+## Day 4 
+### Part 1
+Very straightforward algorithm, quite a chill day 
+### Part 2
+Straightforward too, part 1 was harder XD
 
 
