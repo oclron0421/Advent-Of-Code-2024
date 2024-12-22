@@ -13,4 +13,11 @@ Didnt read my input, coded based off the example input they gave which led me to
 ### Part 2 
 Took me forever to complete, brute force all the way, there has to be a wayyyyy more efficient solution to it...
 
+## Day 3
+### Part 1 
+Might seem daunting but its very very doable
+### Part 2
+I hate regex, implemented the edge cases with the help of others, still no idea what went wrong ._.
+
+
 
