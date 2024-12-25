@@ -25,4 +25,9 @@ Very straightforward algorithm, quite a chill day
 ### Part 2
 Straightforward too, part 1 was harder XD
 
+## Day 5 
+### Part 1 
+Different method of parsing in the input file, nothing too complicated. 
+### Part 2 
+Highlighted the usage and the idea of comparators, making a sorting algorithm within the puzzle's domain, nothing too tough
 
