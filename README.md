@@ -37,4 +37,8 @@ Rather straightforward, just turn the guard direction when needed to and mark ou
 ### Part 2 
 Brtually brute force the path of the guard by adding a wall infront of the guard path which is stored int a queue, and the testing if the guard is stuck in a loop or it can exit.
 
+## Day 7 
+### Part 1 
+Quite easy, need to be careful with the data typing, used long long -- numbers are too big
+
 
