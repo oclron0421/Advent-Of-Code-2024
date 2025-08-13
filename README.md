@@ -31,3 +31,10 @@ Different method of parsing in the input file, nothing too complicated.
 ### Part 2 
 Highlighted the usage and the idea of comparators, making a sorting algorithm within the puzzle's domain, nothing too tough
 
+## Day 6 
+### Part 1 
+Rather straightforward, just turn the guard direction when needed to and mark out the visited points, tally up the visited the points and voila 
+### Part 2 
+Brtually brute force the path of the guard by adding a wall infront of the guard path which is stored int a queue, and the testing if the guard is stuck in a loop or it can exit.
+
+
