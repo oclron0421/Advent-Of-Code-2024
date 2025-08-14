@@ -40,5 +40,6 @@ Brtually brute force the path of the guard by adding a wall infront of the guard
 ## Day 7 
 ### Part 1 
 Quite easy, need to be careful with the data typing, used long long -- numbers are too big
-
+### Part 1 
+Changed the operators configuration to base 3 instead of only using 2 and brute force the numbers all the way, filtered the ones that are valid first then carry one with the rejected pile
 
