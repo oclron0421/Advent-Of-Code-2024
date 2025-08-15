@@ -5,15 +5,18 @@
 #include <sstream>
 #include <map> 
 #include <utility>
+#include <algorithm>
+#include <set> 
 
-#define ROWS 12
-#define COLS 12
+#define ROWS 50
+#define COLS 50
 
 int main() {
 
     std::map < char, std::vector<std::pair<int, int>>> antenna;
-
     std::vector<std::vector<char>> grid;
+    int antinodeCount = 0;
+
     std::ifstream inputFile("input.txt");
     if (!inputFile) {
         std::cerr << "Error opening file." << std::endl;
@@ -44,6 +47,7 @@ int main() {
     //form pairs of antennas in the grid    
     std::map<char, std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>> pairs;
 
+
     for (const auto& entry : antenna) {
         char antennaType = entry.first;
         const auto& positions = entry.second;
@@ -65,63 +69,57 @@ int main() {
         }
     }
 
+
+
     // calculate the vectors between each antenna 
-    std::map<char, std::vector<std::pair<int, int>>> vectors;
+    std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, std::pair<int, int>> vectors;
     for (const auto& entry : pairs) {
-        char antennaType = entry.first;
         for (const auto& pair : entry.second) {
             int dx = pair.second.first - pair.first.first;
             int dy = pair.second.second - pair.first.second;
-            vectors[antennaType].push_back({ dx, dy });
+            vectors.insert({ {pair.first, pair.second}, {dx, dy} });
         }
     }
 
-    //print all the vectors between antennas
+    //print the vectors
+    std::cout << "Vectors between pairs of antennas:" << std::endl;
     for (const auto& entry : vectors) {
-        std::cout << "Vectors for antenna: " << entry.first << std::endl;
-        for (const auto& vec : entry.second) {
-            std::cout << "Vector: (" << vec.first << ", " << vec.second << ")" << std::endl;
-        }
+        std::cout << "Pair: (" << entry.first.first.first << ", " << entry.first.first.second << ") and ("
+            << entry.first.second.first << ", " << entry.first.second.second << ") -> Vector: ("
+            << entry.second.first << ", " << entry.second.second << ")" << std::endl;
     }
-
-    int antinodeCount = 0;
-    //insert an antinode extending from each antenna according to the vector calculated on the grid by replacing the char with '#', DO NOT replace antennas 
+    std::vector<std::pair<int, int>> antiNodes;
+    // find the antinodes in the grid 
     for (const auto& entry : vectors) {
-        char antennaType = entry.first;
-        for (const auto& vec : entry.second) {
-            int dx = vec.first;
-            int dy = vec.second;
-
-            for (const auto& pos : antenna[antennaType]) {
-                int x = pos.first;
-                int y = pos.second;
-
-                // Calculate the new positions
-                // Extend the antinode in both directions along the vector
-                int newX = x + dx;
-                int newY = y + dy;
-                int newX2 = x - (2 * dx);
-                int newY2 = y - (2 * dy);
-
-
-                // Check bounds and replace if within grid limits
-                if (newX >= 0 && newX < ROWS && newY >= 0 && newY < COLS &&
-                    newX2 >= 0 && newX2 < ROWS && newY2 >= 0 && newY2 < COLS &&
-                    grid[newX][newY] == '.' &&
-                    grid[newX2][newY2] == '.') {
-                    grid[newX][newY] = '#';
-                    grid[newX2][newY2] = '#'; // Extend in the opposite direction
-                    antinodeCount += 2; // Count both new positions as antinodes
-
-                }
+        auto pair = entry.first;
+        auto vector = entry.second;
+        int newx1 = pair.first.first - vector.first;
+        int newy1 = pair.first.second - vector.second;
+        int newx2 = pair.second.first + vector.first;
+        int newy2 = pair.second.second + vector.second;
+        if (newx1 >= 0 && newx1 < ROWS && newy1 >= 0 && newy1 < COLS) {
+            antiNodes.push_back({ newx1, newy1 });
+            std::cout << "Antinode found at: (" << newx1 << ", " << newy1 << ")" << std::endl;
+            if (grid[newx1][newy1] == '.') {
+                grid[newx1][newy1] = '#'; // Mark antinode with 'A'
             }
         }
+        if (newx2 >= 0 && newx2 < ROWS && newy2 >= 0 && newy2 < COLS) {
+            antiNodes.push_back({ newx2, newy2 });
+            std::cout << "Antinode found at: (" << newx2 << ", " << newy2 << ")" << std::endl;
+            if (grid[newx2][newy2] == '.') {
+                grid[newx2][newy2] = '#'; // Mark antinode with 'A'
+            }
+        }
+
     }
 
+    //eliminate duplicates in antinodes
+    std::sort(antiNodes.begin(), antiNodes.end());
+    antiNodes.erase(std::unique(antiNodes.begin(), antiNodes.end()), antiNodes.end());
+    antinodeCount = antiNodes.size();
 
-    //cycle through the grid and count the amount of antinodes 
-
-        //print the new grid with antinodes
+    //print the new grid with antinodes
     std::cout << "Grid with antinodes:" << std::endl;
     for (const auto& row : grid) {
         for (char cell : row) {
@@ -132,9 +130,52 @@ int main() {
 
     std::cout << "Total number of antinodes: " << antinodeCount << std::endl;
 
+    // part 2 -- extend the antinodes all the way to the end of the grid 
+    for (const auto& entry : vectors) {
+        auto pair = entry.first;
+        auto vector = entry.second;
+        int newx1 = pair.first.first - vector.first;
+        int newy1 = pair.first.second - vector.second;
+        int newx2 = pair.second.first + vector.first;
+        int newy2 = pair.second.second + vector.second;
+        antiNodes.push_back({ pair.first.first + vector.first, pair.first.second + vector.second });
+        antiNodes.push_back({ pair.second.first - vector.first, pair.second.second - vector.second });
+        do {
+            if (newx1 >= 0 && newx1 < ROWS && newy1 >= 0 && newy1 < COLS) {
+                antiNodes.push_back({ newx1, newy1 });
+                if (grid[newx1][newy1] == '.') {
+                    grid[newx1][newy1] = '#'; // Mark antinode with 'A'
+                }
+                newx1 -= vector.first;
+                newy1 -= vector.second;
+            }
+        } while (newx1 >= 0 && newx1 < ROWS && newy1 >= 0 && newy1 < COLS);
 
+        do {
+            if (newx2 >= 0 && newx2 < ROWS && newy2 >= 0 && newy2 < COLS) {
+                antiNodes.push_back({ newx2, newy2 });
+                if (grid[newx2][newy2] == '.') {
+                    grid[newx2][newy2] = '#'; // Mark antinode with 'A'
+                }
+                newx2 += vector.first;
+                newy2 += vector.second;
+            }
+        } while (newx2 >= 0 && newx2 < ROWS && newy2 >= 0 && newy2 < COLS);
+    }
 
+    //eliminate duplicates in antinodes
+    std::sort(antiNodes.begin(), antiNodes.end());
+    antiNodes.erase(std::unique(antiNodes.begin(), antiNodes.end()), antiNodes.end());
+    antinodeCount = antiNodes.size();
+    //print the new grid with extended antinodes
+    std::cout << "Extended grid with antinodes:" << std::endl;
+    for (const auto& row : grid) {
+        for (char cell : row) {
+            std::cout << cell;
+        }
+        std::cout << std::endl;
+    }
 
-
+    std::cout << "Total number of extended antinodes: " << antinodeCount << std::endl;
     return 0;
 }
