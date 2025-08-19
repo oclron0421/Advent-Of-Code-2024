@@ -7,7 +7,7 @@
 #include <iterator>
 #include <algorithm>
 
-#define MAX_SIZE 19
+#define MAX_SIZE 19999
 
 struct DiskSpace {
     char fileBlock;
@@ -227,27 +227,27 @@ int main() {
         else {
             backItr--;
         }
-        std::cout << std::endl;
-        for (const auto& block : fileSystem) {
-            if (block.fileBlock == '.')
-                std::cout << block.fileBlock;
-            else
-                std::cout << block.value;
+        // std::cout << std::endl;
+        // for (const auto& block : fileSystem) {
+        //     if (block.fileBlock == '.')
+        //         std::cout << block.fileBlock;
+        //     else
+        //         std::cout << block.value;
 
-        }
+        // }
     }
 
     //print out the fileSystem after moving files
-    std::cout << std::endl;
-    std::cout << "File system after moving files:" << std::endl;
-    for (const auto& block : fileSystem) {
-        if (block.fileBlock == '.')
-            std::cout << block.fileBlock;
-        else
-            std::cout << block.value;
-    }
+    // std::cout << std::endl;
+    // std::cout << "File system after moving files:" << std::endl;
+    // for (const auto& block : fileSystem) {
+    //     if (block.fileBlock == '.')
+    //         std::cout << block.fileBlock;
+    //     else
+    //         std::cout << block.value;
+    // }
 
-    std::cout << std::endl;
+    // std::cout << std::endl;
     std::cout << "Total sum of fileSystem: " << checkSum(fileSystem) << std::endl;
 
     return 0;
