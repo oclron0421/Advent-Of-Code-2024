@@ -48,3 +48,9 @@ Changed the operators configuration to base 3 instead of only using 2 and brute 
 Question phrasing was rather confusing. Mostly involved nodes and combinatorics principles. Used directional vectors concepts to find the location of antinodes as well as inbuilt cpp algorithm header to sort and eliminate duplicate antinodes
 ### Part 2 
 Not too hard either, just considered the antenna itself was an antinode and eliminated all duplicate antinode coordinates
+
+## Day 9 
+### Part 1
+Not too hard, hard is about to store the actual value in a point
+### Part 2
+Manipulation of the vector got a little confusing, had to redo a few times
