@@ -39,6 +39,26 @@ void dfs(int r, int c, int val, std::set<std::pair<int, int>>& reachable9, std::
     }
 }
 
+int dfs_count(int r, int c, int val, std::vector<std::vector<bool>>& visited) {
+    if (val == 9) return 1; // base case: reached a 9, one valid path
+
+    visited[r][c] = true;
+    int count = 0;
+
+    for (int k = 0; k < 4; k++) {
+        int nr = r + dR[k];
+        int nc = c + dC[k];
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+            if (!visited[nr][nc] && grid[nr][nc] == val + 1) {
+                count += dfs_count(nr, nc, val + 1, visited);
+            }
+        }
+    }
+
+    visited[r][c] = false; // backtrack
+    return count;
+}
+
 
 int main() {
     std::ifstream file("input.txt");
@@ -69,6 +89,7 @@ int main() {
     rows = grid.size();
     cols = grid[0].size();
     int count;
+    int totalPaths = 0;
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
             if (grid[r][c] == 0) {
@@ -81,13 +102,19 @@ int main() {
                     << reachable9.size() << " different 9s\n";
 
                 count += reachable9.size();
+
+
+                //part 2 
+                std::vector<std::vector<bool>> visited_for_count(rows, std::vector<bool>(cols, false));
+                totalPaths += dfs_count(r, c, 0, visited_for_count);
+                std::cout << "Total paths from (" << r << "," << c << ") to 9s: " << totalPaths << std::endl;
             }
         }
     }
 
 
     std::cout << "Total reachable 9s from all 0s: " << count << std::endl;
-    std::cout << "Total paths found: " << pathCount << std::endl;
+    std::cout << "Total paths found: " << totalPaths << std::endl;
 
     return 0;
 }
