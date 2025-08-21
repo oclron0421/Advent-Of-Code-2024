@@ -61,3 +61,9 @@ All about depth first search in this problem cuh
 Implemented a depth first search algorithm to find how many 9s can each0 reach, using a set to make each path unique so that i don't count more than one when a 0 reached a 9 
 ### Part 2 
 Same as part 1 but easier, just needed to count the amount of paths each 0 took to find a 9 and tallied up the amount of paths.
+
+## Day 11 
+### Part 1 
+Used a vector and stack to process the numbers before pushing it back to the vector then compute the size to get the total amunt of stones after blinking 25 times 
+### Part 2 
+Vector size scaled exponentially, with the help of online redditors, i changed to use a map to store the total amount of numbers seen in a map and then compute the total amount of stones, since the order of the stones in the container doesnt really matter 
