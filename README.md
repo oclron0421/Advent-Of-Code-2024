@@ -54,3 +54,10 @@ Not too hard either, just considered the antenna itself was an antinode and elim
 Not too hard, hard is about to store the actual value in a point
 ### Part 2
 Manipulation of the vector got a little confusing, had to redo a few times
+
+## Day 10
+All about depth first search in this problem cuh
+### Part 1 
+Implemented a depth first search algorithm to find how many 9s can each0 reach, using a set to make each path unique so that i don't count more than one when a 0 reached a 9 
+### Part 2 
+Same as part 1 but easier, just needed to count the amount of paths each 0 took to find a 9 and tallied up the amount of paths.
