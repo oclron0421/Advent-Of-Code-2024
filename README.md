@@ -67,3 +67,9 @@ Same as part 1 but easier, just needed to count the amount of paths each 0 took 
 Used a vector and stack to process the numbers before pushing it back to the vector then compute the size to get the total amunt of stones after blinking 25 times 
 ### Part 2 
 Vector size scaled exponentially, with the help of online redditors, i changed to use a map to store the total amount of numbers seen in a map and then compute the total amount of stones, since the order of the stones in the container doesnt really matter 
+
+## Day 12 
+### Part 1
+Hard part was just trying to figure out how to calculate the perimeter. Used a flood fill algorithm, embedded a bfs search to group up the plants together 
+### Part 2
+Now this was hard because the merger of the sides was a challenge and one boundary coordinate can face a lot of different directions as its boundary
