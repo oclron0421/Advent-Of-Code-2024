@@ -4,9 +4,10 @@
 #include <queue> 
 #include <vector> 
 #include <algorithm> 
+#include <deque>
 
-#define ROWS 4
-#define COLS 4
+#define ROWS 140
+#define COLS 140
 
 int dR[4] = { -1, 1, 0, 0 };
 int dC[4] = { 0, 0, -1, 1 };
@@ -14,13 +15,6 @@ int dC[4] = { 0, 0, -1, 1 };
 struct Plant {
     char value;
     bool visited;
-};
-
-enum Direction {
-    UP = 0,
-    DOWN = 1,
-    LEFT = 2,
-    RIGHT = 3
 };
 
 int calculatePerimeter(std::vector<std::pair<int, int>>& filledCells, std::vector<std::vector<Plant>>& grid, Plant plant) {
@@ -45,26 +39,76 @@ int calculatePerimeter(std::vector<std::pair<int, int>>& filledCells, std::vecto
     return perimeter;
 }
 
-int getSidesFromUpOrDown(std::vector<std::pair<int, int>> boundaryCells) {
+int getSidesFromUpOrDown(std::deque<std::pair<int, int>> boundaryCells) {
     int sides = 0;
-    std::vector<std::pair<int, int>>::iterator itr = boundaryCells.begin();
-    int currentRow = (*itr).first;
-    while (itr != boundaryCells.end()) {
-        int nextRow = (*itr).first;
-        if (nextRow == currentRow) {
+    std::deque<std::pair<int, int>>::iterator itr = boundaryCells.begin();
+    while (boundaryCells.size() > 0) {
+        itr = boundaryCells.begin(); // reset the iterator to the beginning
+        int refRow = itr->first;
 
+        std::queue<std::pair<int, int>> q;
+        for (auto& cell : boundaryCells) {
+            if (cell.first == refRow) {
+                q.push(cell);
+                boundaryCells.pop_front(); // remove the cell from the deque
+            }
         }
-        itr++;
+        //process the queue here 
+        while (!q.empty()) {
+            std::pair<int, int> current = q.front();
+            q.pop();
+            int a = current.second;
+            current = q.front();
+            int b = current.second;
+            if (b == a + 1 || b == a - 1) {
+                continue;
+            }
+            else {
+                sides++;
+            }
+        }
+
     }
+    return sides;
+}
+
+int getSidesFromLeftOrRight(std::deque<std::pair<int, int>> boundaryCells) {
+    int sides = 0;
+    std::deque<std::pair<int, int>>::iterator itr = boundaryCells.begin();
+    while (boundaryCells.size() > 0) {
+        itr = boundaryCells.begin();
+        int refCol = itr->second;
+        std::queue<std::pair<int, int>> q;
+        for (auto& cell : boundaryCells) {
+            if (cell.second == refCol) {
+                q.push(cell);
+                boundaryCells.pop_front(); // remove the cell from the deque
+            }
+        }
+        //process the queue here
+        while (!q.empty()) {
+            std::pair<int, int> current = q.front();
+            q.pop();
+            int a = current.first;
+            current = q.front();
+            int b = current.first;
+            if (b == a + 1 || b == a - 1) {
+                continue;
+            }
+            else {
+                sides++;
+            }
+        }
+    }
+    return sides;
 }
 
 int calculateSides(std::vector<std::pair<int, int>>& filledCells, std::vector<std::vector<Plant>>& grid) {
 
-    std::vector<std::pair<std::pair<int, int>, enum Direction>> boundaries; // (cell, direction)
-    std::vector<std::pair<int, int>> upBoundaries;
-    std::vector<std::pair<int, int>> downBoundaries;
-    std::vector<std::pair<int, int>> rightBoundaries;
-    std::vector<std::pair<int, int>> leftBoundaries;
+    std::deque<std::pair<int, int>> upBoundaries;
+    std::deque<std::pair<int, int>> downBoundaries;
+    std::deque<std::pair<int, int>> rightBoundaries;
+    std::deque<std::pair<int, int>> leftBoundaries;
     int sides = 0;
     Plant plant = grid[filledCells[0].first][filledCells[0].second]; // get the plant from the first filled cell
     for (auto cell : filledCells) {
@@ -121,6 +165,17 @@ int calculateSides(std::vector<std::pair<int, int>>& filledCells, std::vector<st
     }
     std::cout << std::endl;
 
+    std::cout << "Sides for up: " << getSidesFromUpOrDown(upBoundaries) << std::endl;
+    std::cout << "Sides for down: " << getSidesFromUpOrDown(downBoundaries) << std::endl;
+    std::cout << "Sides for right: " << getSidesFromLeftOrRight(rightBoundaries) << std::endl;
+    std::cout << "Sides for left: " << getSidesFromLeftOrRight(leftBoundaries) << std::endl;
+
+    sides += getSidesFromUpOrDown(upBoundaries);
+    sides += getSidesFromUpOrDown(downBoundaries);
+    sides += getSidesFromLeftOrRight(rightBoundaries);
+    sides += getSidesFromLeftOrRight(leftBoundaries);
+
+    std::cout << "Total sides: " << sides << std::endl;
     return sides;
 
 }
@@ -190,6 +245,7 @@ int main() {
 
     file.close();
     int cost = 0;
+    int sidesCost = 0;
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             if (!grid[i][j].visited) {
@@ -198,13 +254,14 @@ int main() {
                 int perimeter = calculatePerimeter(filledCells, grid, grid[i][j]);
                 int area = filledCells.size();
                 cost += perimeter * area; // cost is perimeter * area
-                calculateSides(filledCells, grid);
-
+                int sides = calculateSides(filledCells, grid);
+                sidesCost += sides * area; // sides cost is sides * area
+                // std::cout << "Sides cost: " << sidesCost << std::endl;
             }
         }
     }
 
     std::cout << "Total cost: " << cost << std::endl;
-
+    std::cout << "Total sides cost: " << sidesCost << std::endl;
     return 0;
 }
