@@ -73,3 +73,9 @@ Vector size scaled exponentially, with the help of online redditors, i changed t
 Hard part was just trying to figure out how to calculate the perimeter. Used a flood fill algorithm, embedded a bfs search to group up the plants together 
 ### Part 2
 Now this was hard because the merger of the sides was a challenge and one boundary coordinate can face a lot of different directions as its boundary
+
+## Day 13
+### Part 1
+Used inverse matrix rules to solve the simultaneous equations nothing to fancy 
+### Part 2 
+Changed the data type to a long double and used the same inverse matrix rule to solve the simultaneous equations -- worked surprisingly well
