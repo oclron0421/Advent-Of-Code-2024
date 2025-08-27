@@ -155,32 +155,32 @@ int main() {
     // std::cout << "The safety factor is: " << getSafetyFactor(grid) << std::endl;
 
     //reset the grid and robot position
-    int bestTime = -1;
-    long long bestArea = LLONG_MAX;
-    for (int t = 0; t < 10000; t++) {
-        std::vector<std::pair<int, int>> positions;
-        for (auto& r : robots) {
-            int x = (r.position.first + r.velocity.first * t) % COLS;
-            int y = (r.position.second + r.velocity.second * t) % ROWS;
-            if (x < 0) x += COLS;
-            if (y < 0) y += ROWS;
-            positions.push_back({ x,y });
-        }
+    // int bestTime = -1;
+    // long long bestArea = LLONG_MAX;
+    // for (int t = 0; t < 10000; t++) {
+    //     std::vector<std::pair<int, int>> positions;
+    //     for (auto& r : robots) {
+    //         int x = (r.position.first + r.velocity.first * t) % COLS;
+    //         int y = (r.position.second + r.velocity.second * t) % ROWS;
+    //         if (x < 0) x += COLS;
+    //         if (y < 0) y += ROWS;
+    //         positions.push_back({ x,y });
+    //     }
 
-        int minX = COLS, maxX = 0, minY = ROWS, maxY = 0;
-        for (auto [x, y] : positions) {
-            minX = std::min(minX, x);
-            maxX = std::max(maxX, x);
-            minY = std::min(minY, y);
-            maxY = std::max(maxY, y);
-        }
-        long long area = 1LL * (maxX - minX + 1) * (maxY - minY + 1);
-        if (area < bestArea) {
-            bestArea = area;
-            bestTime = t;
-        }
-    }
-    std::cout << "Tree likely appears at time " << bestTime << "\n";
+    //     int minX = COLS, maxX = 0, minY = ROWS, maxY = 0;
+    //     for (auto& [x, y] : positions) {
+    //         minX = std::min(minX, x);
+    //         maxX = std::max(maxX, x);
+    //         minY = std::min(minY, y);
+    //         maxY = std::max(maxY, y);
+    //     }
+    //     long long area = 1LL * (maxX - minX + 1) * (maxY - minY + 1);
+    //     if (area < bestArea) {
+    //         bestArea = area;
+    //         bestTime = t;
+    //     }
+    // }
+    // std::cout << "Tree likely appears at time " << bestTime << "\n";
 
     return 0;
 }
