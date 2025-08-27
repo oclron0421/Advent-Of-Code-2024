@@ -6,6 +6,7 @@
 #include <queue>
 #include <utility>
 #include <map> 
+#include <stack>
 
 struct Pos {
     int r, c;
@@ -35,7 +36,7 @@ int main() {
             for (char c : line) {
                 if (c == '@') {
                     lanternFish.r = grid.size();
-                    lanternFish.c = row.size() - 1;
+                    lanternFish.c = row.size();
                     row.push_back('.');
                 }
                 else {
@@ -50,37 +51,51 @@ int main() {
             }
         }
     }
-
+    for (int r = 0; r < grid.size(); r++) {
+        for (int c = 0; c < grid[r].size(); c++) {
+            if (r == lanternFish.r && c == lanternFish.c) {
+                std::cout << '@';
+            }
+            else {
+                std::cout << grid[r][c];
+            }
+        }
+        std::cout << std::endl;
+    }
 
     while (!directions.empty()) {
         char dir = directions.front();
         directions.pop();
         int nr = lanternFish.r + dirMap[dir].r;
         int nc = lanternFish.c + dirMap[dir].c;
-        int tempR, tempC;
+        int tempR = nr; int tempC = nc;
         //check the new position 
-        std::vector<Pos> tempStones;
+        std::stack<Pos> tempStones;
         switch (grid[nr][nc]) {
         case '#':
             //hit a wall, do nothing
             break;
         case 'O':
             do {
-                tempStones.push_back({ nr, nc });
-                tempR = nr + dirMap[dir].r;
-                tempC = nc + dirMap[dir].c;
+                tempStones.push({ nr, nc });
+                tempR += dirMap[dir].r;
+                tempC += dirMap[dir].c;
             } while (!grid[tempR][tempC] == '.' || !grid[tempR][tempR] == '#');
+            //temp coordinates are now at the end of the stone stack
+
             if (grid[nr][nc] == '#') {
                 //hit a wall, do nothing
                 break;
             }
             else {
                 //move the stones
-                for (Pos p : tempStones) {
-                    grid[p.r][p.c] = '.';
-                    int sr = p.r + dirMap[dir].r;
-                    int sc = p.c + dirMap[dir].c;
-                    grid[sr][sc] = 'O';
+                while (!tempStones.empty()) {
+                    Pos stone = tempStones.top();
+                    tempStones.pop();
+                    grid[stone.r - dirMap[dir].r][stone.c - dirMap[dir].c] = 'O';
+                    tempR -= dirMap[dir].r;
+                    tempC -= dirMap[dir].c;
+                    grid[stone.r][stone.c] = '.';
                 }
                 lanternFish.r = nr;
                 lanternFish.c = nc;
@@ -91,6 +106,19 @@ int main() {
             lanternFish.c = nc;
             break;
         }
+        //print the grid
+        for (int r = 0; r < grid.size(); r++) {
+            for (int c = 0; c < grid[r].size(); c++) {
+                if (r == lanternFish.r && c == lanternFish.c) {
+                    std::cout << '@';
+                }
+                else {
+                    std::cout << grid[r][c];
+                }
+            }
+            std::cout << std::endl;
+        }
     }
+
     return 0;
 }
