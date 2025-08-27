@@ -79,3 +79,9 @@ Now this was hard because the merger of the sides was a challenge and one bounda
 Used inverse matrix rules to solve the simultaneous equations nothing to fancy 
 ### Part 2 
 Changed the data type to a long double and used the same inverse matrix rule to solve the simultaneous equations -- worked surprisingly well
+
+## Day 14 
+### Part 1 
+Simple iterations and used modulo to find out where the robot will end up after the 100 iterations in the grid 
+### Part 2 
+Used density detection to detect the christmas tree
