@@ -17,12 +17,21 @@ std::map<char, Pos> dirMap = {
     {'<',{0,-1}}, {'>',{0,1}}
 };
 
+long sumOfGPSCoordinates(std::vector<std::pair<int, int>> coords) {
+    long sum = 0;
+    for (std::pair<int, int> coord : coords) {
+        sum += (coord.first * 100) + coord.second;
+    }
+    return sum;
+}
+
 int main() {
 
     std::ifstream file("input.txt");
     std::vector<std::vector<char>> grid;
     std::queue<char> directions;
     std::string line;
+    std::vector<std::pair<int, int>> gpsCoordinates;
     Pos lanternFish = { 0, 0 };
     bool readingGrid = true;
 
@@ -77,13 +86,13 @@ int main() {
             break;
         case 'O':
             do {
-                tempStones.push({ nr, nc });
+                tempStones.push({ tempR,tempC });
                 tempR += dirMap[dir].r;
                 tempC += dirMap[dir].c;
-            } while (!grid[tempR][tempC] == '.' || !grid[tempR][tempR] == '#');
+            } while (grid[tempR][tempC] == 'O');
             //temp coordinates are now at the end of the stone stack
 
-            if (grid[nr][nc] == '#') {
+            if (grid[tempR][tempC] == '#') {
                 //hit a wall, do nothing
                 break;
             }
@@ -92,9 +101,7 @@ int main() {
                 while (!tempStones.empty()) {
                     Pos stone = tempStones.top();
                     tempStones.pop();
-                    grid[stone.r - dirMap[dir].r][stone.c - dirMap[dir].c] = 'O';
-                    tempR -= dirMap[dir].r;
-                    tempC -= dirMap[dir].c;
+                    grid[stone.r + dirMap[dir].r][stone.c + dirMap[dir].c] = 'O';
                     grid[stone.r][stone.c] = '.';
                 }
                 lanternFish.r = nr;
@@ -107,18 +114,31 @@ int main() {
             break;
         }
         //print the grid
-        for (int r = 0; r < grid.size(); r++) {
-            for (int c = 0; c < grid[r].size(); c++) {
-                if (r == lanternFish.r && c == lanternFish.c) {
-                    std::cout << '@';
-                }
-                else {
-                    std::cout << grid[r][c];
-                }
+        // for (int r = 0; r < grid.size(); r++) {
+        //     for (int c = 0; c < grid[r].size(); c++) {
+        //         if (r == lanternFish.r && c == lanternFish.c) {
+        //             std::cout << '@';
+        //         }
+        //         else {
+        //             std::cout << grid[r][c];
+        //         }
+        //     }
+        //     std::cout << std::endl;
+        // }
+    }
+
+    for (int r = 0; r < grid.size(); r++) {
+        for (int c = 0; c < grid[r].size(); c++) {
+            if (grid[r][c] == 'O') {
+                gpsCoordinates.push_back({ r,c });
             }
-            std::cout << std::endl;
         }
     }
+
+    std::cout << "Sum of GPS coordinates: " << sumOfGPSCoordinates(gpsCoordinates) << std::endl;
+
+
+
 
     return 0;
 }
